@@ -7,6 +7,9 @@ dependencies:
   - qiime2-amplicon
   - numpy
   - scikit-learn
+  - frictionless 
   - pip
   - pip:
-     - "q2-kmerizer @ git+https://github.com/bokulich-lab/q2-kmerizer.git"
+     - "q2_kmerizer@git+https://github.com/bokulich-lab/q2-kmerizer.git@main"
+     - "q2_vizard@git+https://github.com/qiime2/q2-vizard.git@dev"
+     - "q2_stats@git+https://github.com/qiime2/q2-stats.git@dev"
