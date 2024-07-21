@@ -10,6 +10,7 @@ import pandas as pd
 import pandas.testing as pdt
 
 from qiime2.plugin.testing import TestPluginBase
+from qiime2 import Artifact, Metadata
 
 from q2_kmerizer._methods import seqs_to_kmers
 
@@ -19,6 +20,7 @@ class KmerizerTests(TestPluginBase):
 
     def setUp(self):
         super().setUp()
+        self.core_metrics = self.plugin.pipelines['core_metrics']
         self.seqs = pd.Series(
             ['TACGGGAGGGTGCAAGCGTT', 'TACGAGAAGGGTTAGCGTTA'], index=['A', 'B'])
         self.table = pd.DataFrame([[1, 0], [2, 3], [1, 1]],
@@ -87,3 +89,15 @@ class KmerizerTests(TestPluginBase):
             ['AAAAAAAA', 'AAAATTTT'], index=['no', 'match'])
         with self.assertRaisesRegex(ValueError, "No feature IDs match*"):
             seqs_to_kmers(new_seqs, self.table, tfidf=True)
+
+    # this test just tests that the pipeline runs, as the individual actions
+    # are already tested.
+    # TODO: inspect the scatterplot output to check that contents are correct?
+    def test_core_metrics(self):
+        metadata = Metadata(pd.DataFrame(
+            [['blue'], ['red'], ['blue']], columns=['color'],
+            index=pd.Index(['s1', 's2', 's3'], name='id')))
+        seqs = Artifact.import_data('FeatureData[Sequence]', self.seqs)
+        table = Artifact.import_data('FeatureTable[Frequency]', self.table)
+        self.core_metrics(seqs, table, metadata=metadata,
+                          sampling_depth=1, kmer_size=7)

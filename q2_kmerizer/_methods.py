@@ -10,6 +10,8 @@ import numpy as np
 import pandas as pd
 import biom
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from skbio import OrdinationResults
+from qiime2 import Metadata
 
 
 def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
@@ -49,3 +51,59 @@ def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
         frequencies.T, observation_ids=cv.get_feature_names_out(),
         sample_ids=table.index)
     return kmer_table
+
+
+def core_metrics(ctx, sequences, table, sampling_depth, metadata,
+                 kmer_size=16, tfidf=False, max_df=1.0, min_df=1,
+                 max_features=None, with_replacement=False, n_jobs=1,
+                 pc_dimensions=3, color_by_group=None):
+
+    rarefy = ctx.get_action('feature_table', 'rarefy')
+    kmerize = ctx.get_action('kmerizer', 'seqs_to_kmers')
+    observed_features = ctx.get_action('diversity_lib', 'observed_features')
+    shannon = ctx.get_action('diversity_lib', 'shannon_entropy')
+    braycurtis = ctx.get_action('diversity_lib', 'bray_curtis')
+    jaccard = ctx.get_action('diversity_lib', 'jaccard')
+    pcoa = ctx.get_action('diversity', 'pcoa')
+    scatter = ctx.get_action('vizard', 'scatterplot_2d')
+
+    results = []
+    rarefied_table, = rarefy(table=table, sampling_depth=sampling_depth,
+                             with_replacement=with_replacement)
+    results.append(rarefied_table)
+
+    kmer_table, = kmerize(sequences, table, kmer_size, tfidf, max_df, min_df,
+                          max_features)
+    results.append(kmer_table)
+
+    for metric in (observed_features, shannon):
+        alpha_result = metric(table=kmer_table)
+        results += alpha_result
+        metadata = alpha_result.vector.view(Metadata).merge(metadata)
+
+    dms = []
+    for metric in (jaccard, braycurtis):
+        beta_results = metric(table=kmer_table, n_jobs=n_jobs)
+        results += beta_results
+        dms += beta_results
+
+    pcoas = []
+    for dm in dms:
+        pcoa_results = pcoa(distance_matrix=dm)
+        results += pcoa_results
+        pcoas += pcoa_results
+
+    for pcoa, name in zip(pcoas, ['Jaccard', 'Bray-Curtis']):
+        pc_result = pcoa.view(OrdinationResults)
+        prop_explained = pc_result.proportion_explained[:pc_dimensions].values
+        pc_result = pcoa.view(Metadata).to_dataframe().iloc[:, :pc_dimensions]
+        pc_result.columns = ['{0} {1} ({2}%)'.format(name, c, int(p * 100)) for
+                             c, p in zip(pc_result.columns, prop_explained)]
+        metadata = Metadata(pc_result).merge(metadata)
+
+    results += scatter(metadata=metadata,
+                       # x_measure=pc_result.columns[0],
+                       # y_measure=pc_result.columns[1],
+                       color_by_group=color_by_group)
+
+    return tuple(results)
