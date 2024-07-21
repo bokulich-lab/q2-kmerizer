@@ -6,19 +6,6 @@ Note: this plugin is under active development during pre-release. The code shoul
 
 ## Installation instructions
 
-###  Install in an existing QIIME 2 environment
-
-q2-kmerizer is compatible with QIIME 2 amplicon and metagenome distributions from release versions 2024.5+. To install in one of these environments, make sure that the relevant conda environment is activated and then install with:
-```
-pip install https://github.com/bokulich-lab/q2-kmerizer.git
-```
-
-The run the following to refresh the cache and test that the installation worked:
-```
-qiime dev refresh-cache
-qiime kmerizer --help
-```
-
 ### Install development version of `q2-kmerizer` "from scratch"
 
 If you do not already have a QIIME 2 environment installed, you can follow these instructions to install a development version of q2-kmerizer.
@@ -58,9 +45,54 @@ make install
 ```
 
 
+## Examples
+
+As an example test, we will use data from [Sampson et al, 2016](https://www.ncbi.nlm.nih.gov/pubmed/27912057), a study testing whether the fecal microbiome contributed to the development of Parkinson’s Disease (PD).
+
+First we will download the test data:
+
+```
+wget https://data.qiime2.org/2024.5/tutorials/pd-mice/sample_metadata.tsv
+wget https://docs.qiime2.org/2024.5/data/tutorials/pd-mice/dada2_table.qza
+wget https://docs.qiime2.org/2024.5/data/tutorials/pd-mice/dada2_rep_set.qza
+```
+
+We can count kmer frequencies per sample with this command:
+```
+qiime kmerizer seqs-to-kmers \
+    --i-sequences dada2_rep_set.qza \
+    --i-table dada2_table.qza \
+    --o-kmer-table kmer_table.qza \
+    --p-max-features 5000
+```
+
+Or run this pipeline to count kmer frequencies, calculate diversity metrics, and create an interactive scatterplot with the results:
+
+```
+qiime kmerizer core-metrics \
+    --i-sequences dada2_rep_set.qza \
+    --i-table dada2_table.qza \
+    --p-sampling-depth 1000 \
+    --m-metadata-file sample_metadata.tsv \
+    --p-color-by-group donor \
+    --p-max-features 5000 \
+    --output-dir core-metrics/
+```
+
+Both of these actions output a frequency table that contains kmer counts per sample. This can be used like any other frequency table and passed to any action in QIIME 2 that accepts a frequency table (except for those that also require additional inputs that must match the features in the table, e.g., that require a taxonomy). For example, we can run a pipeline to train a Random Forest classifier and test on a hold-out subset of the dataset (note: this analysis is done purely for demonstrative purposes; the sample size in this test dataset is much smaller than would be required for a robust supervised learning analysis, and proper replicate handling should be done to avoid data leakage).
+
+
+```
+qiime sample-classifier classify-samples \
+    --i-table kmer_table.qza \
+    --m-metadata-file sample_metadata.tsv \
+    --m-metadata-column donor \
+    --output-dir sample-classifier/
+```
+
 ## About
 
-The `q2-kmerizer` Python package was [created from template](https://develop.qiime2.org/en/latest/plugins/tutorials/create-from-template.html).
+The `q2-kmerizer` Python package was [created from a template](https://develop.qiime2.org/en/latest/plugins/tutorials/create-from-template.html).
 To learn more about `q2-kmerizer`, refer to the [project website](https://github.com/bokulich-lab/q2-kmerizer).
 To learn how to use QIIME 2, refer to the [QIIME 2 User Documentation](https://docs.qiime2.org).
 To learn QIIME 2 plugin development, refer to [*Developing with QIIME 2*](https://develop.qiime2.org).
