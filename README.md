@@ -98,3 +98,9 @@ To learn how to use QIIME 2, refer to the [QIIME 2 User Documentation](https://d
 To learn QIIME 2 plugin development, refer to [*Developing with QIIME 2*](https://develop.qiime2.org).
 
 `q2-kmerizer` is a QIIME 2 plugin. For questions, comments, or feature requests about this plugin, please post in the [Community Plugins category](https://forum.qiime2.org/c/community-contributions/community-plugins/14) on the QIIME 2 Forum. The issue tracker on the GitHub repository is intended for use by the plugin developers and maintainers, not as a help forum.
+
+## Citation
+
+If you use q2-kmerizer in your work, please cite the following article:
+
+Bokulich, N.A. 2024. Integrating sequence composition information into microbial diversity analyses with k-mer frequency counting. bioRxiv 2024.08.13.607770; doi: https://doi.org/10.1101/2024.08.13.607770 
