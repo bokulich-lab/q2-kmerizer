@@ -14,7 +14,7 @@ Next, activate that conda environment, clone the q2-kmerizer repository and move
 
 ```
 git clone https://github.com/bokulich-lab/q2-kmerizer.git
-git cd q2-kmerizer
+cd q2-kmerizer
 ```
 
 Finally, to install q2-kmerizer run:
@@ -46,7 +46,7 @@ Next, clone the repository and move into the top-level `q2-kmerizer` directory. 
 
 ```
 git clone https://github.com/bokulich-lab/q2-kmerizer.git
-git cd q2-kmerizer
+cd q2-kmerizer
 ```
 
 Then, run:
