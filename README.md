@@ -8,19 +8,16 @@ Note: this plugin is under active development during pre-release. The code shoul
 
 ### Install into an existing QIIME 2 environment
 
-The simplest and recommended way to install q2-kmerizer is into an existing QIIME 2 conda environment. You can install QIIME 2 following the instructions at https://docs.qiime2.org/.
+The simplest and recommended way to install q2-kmerizer is into an existing QIIME 2 conda environment. You can install the QIIME 2 amplicon distribution following the instructions at https://docs.qiime2.org/.
 
-Next, activate that conda environment, clone the q2-kmerizer repository and move into the top-level `q2-kmerizer` directory.
+Next, activate that conda environment and run the following command to install q2-kmerizer:
 
 ```
-git clone https://github.com/bokulich-lab/q2-kmerizer.git
-cd q2-kmerizer
+pip install git+https://github.com/bokulich-lab/q2-kmerizer.git
 ```
 
-Finally, to install q2-kmerizer run:
-
-```shell
-make install
+And refresh your cache:
+```
 qiime dev refresh-cache
 ```
 
