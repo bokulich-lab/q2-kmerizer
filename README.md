@@ -6,9 +6,32 @@ Note: this plugin is under active development during pre-release. The code shoul
 
 ## Installation instructions
 
+### Install into an existing QIIME 2 environment
+
+The simplest and recommended way to install q2-kmerizer is into an existing QIIME 2 conda environment. You can install QIIME 2 following the instructions at https://docs.qiime2.org/.
+
+Next, activate that conda environment, clone the q2-kmerizer repository and move into the top-level `q2-kmerizer` directory.
+
+```
+git clone https://github.com/bokulich-lab/q2-kmerizer.git
+git cd q2-kmerizer
+```
+
+Finally, to install q2-kmerizer run:
+
+```shell
+make install
+qiime dev refresh-cache
+```
+
+If the installation worked correctly, the following command should display a description of the plugin in your terminal:
+```
+qiime kmerizer --help
+```
+
 ### Install development version of `q2-kmerizer` "from scratch"
 
-If you do not already have a QIIME 2 environment installed, you can follow these instructions to install a development version of q2-kmerizer.
+If you do not already have a QIIME 2 environment installed and wish to install a development version of q2-kmerizer, you can follow these instructions to install a development version of q2-kmerizer.
 
 [Miniconda](https://conda.io/miniconda.html) provides the `conda` environment and package manager, and is currently the only supported way to install QIIME 2.
 Follow the instructions for downloading and installing Miniconda.
