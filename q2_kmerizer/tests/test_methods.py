@@ -100,4 +100,5 @@ class KmerizerTests(TestPluginBase):
         seqs = Artifact.import_data('FeatureData[Sequence]', self.seqs)
         table = Artifact.import_data('FeatureTable[Frequency]', self.table)
         self.core_metrics(seqs, table, metadata=metadata,
-                          sampling_depth=1, kmer_size=7)
+                          sampling_depth=1, kmer_size=7,
+                          color_by_group='color')
