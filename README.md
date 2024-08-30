@@ -6,14 +6,27 @@ Note: this plugin is under active development during pre-release. The code shoul
 
 ## Installation instructions
 
-### Install into an existing QIIME 2 environment
+### Installation of stable release (QIIME 2 version 2024.5)
 
-The simplest and recommended way to install q2-kmerizer is into an existing QIIME 2 conda environment. You can install the QIIME 2 amplicon distribution following the instructions at https://docs.qiime2.org/.
+[Miniconda](https://conda.io/miniconda.html) provides the `conda` environment and package manager, and is currently the only supported way to install QIIME 2.
+Follow the instructions for downloading and installing Miniconda.
 
-Next, activate that conda environment and run the following command to install q2-kmerizer:
+After installing Miniconda and opening a new terminal, make sure you're running the latest version of `conda`:
 
+```bash
+conda update conda
 ```
-pip install git+https://github.com/bokulich-lab/q2-kmerizer.git
+
+Now install q2-kmerizer and QIIME 2:
+
+```shell
+conda env create -n q2-kmerizer2 --file https://raw.githubusercontent.com/bokulich-lab/q2-kmerizer/main/environments/q2-kmerizer-qiime2-amplicon-2024.10.yml
+```
+
+After this completes, activate the new environment you created by running:
+
+```shell
+conda activate q2-kmerizer-dev
 ```
 
 And refresh your cache:
@@ -26,18 +39,12 @@ If the installation worked correctly, the following command should display a des
 qiime kmerizer --help
 ```
 
-### Install development version of `q2-kmerizer` "from scratch"
 
-If you do not already have a QIIME 2 environment installed and wish to install a development version of q2-kmerizer, you can follow these instructions to install a development version of q2-kmerizer.
+### Install development version of `q2-kmerizer`
 
-[Miniconda](https://conda.io/miniconda.html) provides the `conda` environment and package manager, and is currently the only supported way to install QIIME 2.
-Follow the instructions for downloading and installing Miniconda.
+If you wish to use the development version of q2-kmerizer, e.g., to develop new features in your fork or to contribute to the main branch, follow these instructions.
 
-After installing Miniconda and opening a new terminal, make sure you're running the latest version of `conda`:
-
-```bash
-conda update conda
-```
+First, you must have conda installed, as described above.
 
 Next, clone the repository and move into the top-level `q2-kmerizer` directory. NOTE: make sure your current working directory is a location where you want to install this plugin!
 
@@ -63,6 +70,7 @@ Finally, run:
 ```shell
 make install
 ```
+
 
 
 ## Examples
