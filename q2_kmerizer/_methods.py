@@ -72,8 +72,8 @@ def core_metrics(ctx, sequences, table, sampling_depth, metadata,
                              with_replacement=with_replacement)
     results.append(rarefied_table)
 
-    kmer_table, = kmerize(sequences, table, kmer_size, tfidf, max_df, min_df,
-                          max_features)
+    kmer_table, = kmerize(sequences, rarefied_table, kmer_size, tfidf, max_df,
+                          min_df, max_features)
     results.append(kmer_table)
 
     for metric in (observed_features, shannon):
