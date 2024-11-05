@@ -94,7 +94,7 @@ plugin.pipelines.register_function(
                 'with_replacement': Bool,
                 'n_jobs': Int % Range(1, None) | Str % Choices(['auto']),
                 'pc_dimensions': Int,
-                'color_by_group': Str},
+                'color_by': Str},
     outputs=[
         ('rarefied_table', FeatureTable[Frequency]),
         ('kmer_table', FeatureTable[Frequency]),
@@ -118,8 +118,8 @@ plugin.pipelines.register_function(
         'n_jobs': '[beta methods only] - %s' % n_jobs_description,
         'pc_dimensions': 'Number of principal coordinate dimensions to keep '
                          'for plotting.',
-        'color_by_group': 'Categorical measure from the input Metadata that '
-                          'should be used for color-coding the scatterplot.'},
+        'color_by': 'Categorical measure from the input Metadata that '
+                    'should be used for color-coding the scatterplot.'},
     output_descriptions={
         'rarefied_table': 'The resulting rarefied feature table.',
         'kmer_table': 'Frequencies of kmers per sample.',

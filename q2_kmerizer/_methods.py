@@ -56,7 +56,7 @@ def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
 def core_metrics(ctx, sequences, table, sampling_depth, metadata,
                  kmer_size=16, tfidf=False, max_df=1.0, min_df=1,
                  max_features=None, with_replacement=False, n_jobs=1,
-                 pc_dimensions=3, color_by_group=None):
+                 pc_dimensions=3, color_by=None):
 
     rarefy = ctx.get_action('feature_table', 'rarefy')
     kmerize = ctx.get_action('kmerizer', 'seqs_to_kmers')
@@ -104,6 +104,6 @@ def core_metrics(ctx, sequences, table, sampling_depth, metadata,
     results += scatter(metadata=metadata,
                        # x_measure=pc_result.columns[0],
                        # y_measure=pc_result.columns[1],
-                       color_by_group=color_by_group)
+                       color_by=color_by)
 
     return tuple(results)
