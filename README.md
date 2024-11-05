@@ -6,27 +6,9 @@ Note: this plugin is under active development during pre-release. The code shoul
 
 ## Installation instructions
 
-### Installation of stable release (QIIME 2 version 2024.5)
-
-[Miniconda](https://conda.io/miniconda.html) provides the `conda` environment and package manager, and is currently the only supported way to install QIIME 2.
-Follow the instructions for downloading and installing Miniconda.
-
-After installing Miniconda and opening a new terminal, make sure you're running the latest version of `conda`:
-
-```bash
-conda update conda
+The easiest way to install q2-kmerizer is to install it directly into an existing installation of [QIIME 2](https://qiime2.org/) (amplicon distribution version 2024.10 or later). If you have the QIIME 2 amplicon distribution installed, activate your environment and run the following to install q2-kmerizer into this environment:
 ```
-
-Now install q2-kmerizer and QIIME 2:
-
-```shell
-conda env create -n q2-kmerizer2 --file https://raw.githubusercontent.com/bokulich-lab/q2-kmerizer/main/environments/q2-kmerizer-qiime2-amplicon-2024.10.yml
-```
-
-After this completes, activate the new environment you created by running:
-
-```shell
-conda activate q2-kmerizer-dev
+pip install q2_kmerizer@git+https://github.com/bokulich-lab/q2-kmerizer.git@main
 ```
 
 And refresh your cache:
@@ -38,6 +20,35 @@ If the installation worked correctly, the following command should display a des
 ```
 qiime kmerizer --help
 ```
+
+
+
+### Installation of stable release
+
+If you do not already have QIIME 2 installed, you can follow these instructions to install the QIIME 2 amplicon distribution as well as the latest stable version of q2-kmerizer.
+
+[Miniconda](https://conda.io/miniconda.html) provides the `conda` environment and package manager, and is currently the only supported way to install QIIME 2.
+Follow the instructions for downloading and installing Miniconda.
+
+After installing Miniconda and opening a new terminal, make sure you're running the latest version of `conda`:
+
+```bash
+conda update conda
+```
+
+Now ue conda to install q2-kmerizer and QIIME 2:
+
+```shell
+conda env create -n kmerizer-stable --file https://raw.githubusercontent.com/bokulich-lab/q2-kmerizer/main/environments/q2-kmerizer-qiime2-amplicon-2024.10.yml
+```
+
+After this completes, activate the new environment you created by running:
+
+```shell
+conda activate kmerizer-stable
+```
+
+Then refresh your cache and test as shown above.
 
 
 ### Install development version of `q2-kmerizer`
@@ -71,6 +82,8 @@ Finally, run:
 make install
 ```
 
+Then refresh your cache and test as shown above.
+
 
 
 ## Examples
@@ -80,9 +93,9 @@ As an example test, we will use data from [Sampson et al, 2016](https://www.ncbi
 First we will download the test data:
 
 ```
-wget https://data.qiime2.org/2024.5/tutorials/pd-mice/sample_metadata.tsv
-wget https://docs.qiime2.org/2024.5/data/tutorials/pd-mice/dada2_table.qza
-wget https://docs.qiime2.org/2024.5/data/tutorials/pd-mice/dada2_rep_set.qza
+wget https://data.qiime2.org/2024.10/tutorials/pd-mice/sample_metadata.tsv
+wget https://docs.qiime2.org/2024.10/data/tutorials/pd-mice/dada2_table.qza
+wget https://docs.qiime2.org/2024.10/data/tutorials/pd-mice/dada2_rep_set.qza
 ```
 
 We can count kmer frequencies per sample with this command:
