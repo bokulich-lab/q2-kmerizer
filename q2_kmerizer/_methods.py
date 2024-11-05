@@ -17,7 +17,8 @@ from qiime2 import Metadata
 def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
                   kmer_size: int = 16, tfidf: bool = False,
                   max_df: float = 1.0, min_df: float = 1,
-                  max_features: float = None) -> biom.Table:
+                  max_features: float = None,
+                  norm: str = 'None') -> biom.Table:
     # ngram_range = tuple
     # convert single kmer size to tuple (range is not enabled at this time)
     ngram_range = (kmer_size, kmer_size)
@@ -28,6 +29,8 @@ def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
     # TODO: is there a way to allow the user to choose min_df = 1.0?
     if min_df >= 1.0:
         min_df = int(min_df)
+    if norm == 'None':
+        norm = None
 
     # Align table and sequences to match order and intersection of features
     table, sequences = table.align(sequences, join='inner', axis=1)
@@ -37,10 +40,14 @@ def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
     # vectorize
     if tfidf:
         _vectorizer = TfidfVectorizer
+        cv = _vectorizer(
+            ngram_range=ngram_range, analyzer='char', lowercase=False,
+            max_df=max_df, min_df=min_df, max_features=max_features, norm=norm)
     else:
         _vectorizer = CountVectorizer
-    cv = _vectorizer(ngram_range=ngram_range, analyzer='char', lowercase=False,
-                     max_df=max_df, min_df=min_df, max_features=max_features)
+        cv = _vectorizer(
+            ngram_range=ngram_range, analyzer='char', lowercase=False,
+            max_df=max_df, min_df=min_df, max_features=max_features)
     # derive table of kmer frequencies per sequence
     X = cv.fit_transform(sequences.apply(str).values.tolist())
     # matrix multiplication of sampleXsequence X sequenceXkmer = sampleXkmer
@@ -56,7 +63,7 @@ def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
 def core_metrics(ctx, sequences, table, sampling_depth, metadata,
                  kmer_size=16, tfidf=False, max_df=1.0, min_df=1,
                  max_features=None, with_replacement=False, n_jobs=1,
-                 pc_dimensions=3, color_by=None):
+                 pc_dimensions=3, color_by=None, norm='None'):
 
     rarefy = ctx.get_action('feature_table', 'rarefy')
     kmerize = ctx.get_action('kmerizer', 'seqs_to_kmers')
@@ -73,7 +80,7 @@ def core_metrics(ctx, sequences, table, sampling_depth, metadata,
     results.append(rarefied_table)
 
     kmer_table, = kmerize(sequences, rarefied_table, kmer_size, tfidf, max_df,
-                          min_df, max_features)
+                          min_df, max_features, norm)
     results.append(kmer_table)
 
     for metric in (observed_features, shannon):

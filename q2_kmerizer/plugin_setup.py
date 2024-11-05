@@ -50,7 +50,8 @@ core_parameters = {
                             inclusive_end=True) | Int,
     'min_df': Float % Range(0, 1, inclusive_start=True,
                             inclusive_end=False) | Int,
-    'max_features': Int}
+    'max_features': Int,
+    'norm': Str % Choices(['None', 'l1', 'l2'])}
 
 input_descriptions = {'sequences': 'Biological sequences to kmerize.',
                       'table': 'Frequencies of sequences per sample.'}
@@ -70,7 +71,10 @@ core_parameters_descriptions = {
               'absolute count.',
     'max_features': 'If not None, build a vocabulary that only considers '
                     'the top max_features ordered by frequency (or TF-IDF '
-                    'score).'}
+                    'score).',
+    'norm': 'Normalization procedure applied to TF-IDF scores. Ignored '
+            'if tfidf=False. l2: Sum of squares of vector elements is 1. '
+            'l1: Sum of absolute values of vector elements is 1.'}
 
 plugin.methods.register_function(
     function=seqs_to_kmers,
