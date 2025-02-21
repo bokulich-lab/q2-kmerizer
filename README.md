@@ -2,8 +2,6 @@
 
 A [QIIME 2](https://qiime2.org) plugin for generating and working with kmers from biological sequence information.
 
-Note: this plugin is under active development during pre-release. The code should not be considered stable or ready for publication-ready analyses.
-
 ## Installation instructions
 
 The easiest way to install q2-kmerizer is to install it directly into an existing installation of [QIIME 2](https://qiime2.org/) (amplicon distribution version 2024.10 or later). If you have the QIIME 2 amplicon distribution installed, activate your environment and run the following to install q2-kmerizer into this environment:
@@ -144,4 +142,4 @@ To learn QIIME 2 plugin development, refer to [*Developing with QIIME 2*](https:
 
 If you use q2-kmerizer in your work, please cite the following article:
 
-Bokulich, N.A. 2024. Integrating sequence composition information into microbial diversity analyses with k-mer frequency counting. bioRxiv 2024.08.13.607770; doi: https://doi.org/10.1101/2024.08.13.607770 
+Bokulich NA. 2024. Integrating sequence composition information into microbial diversity analyses with k-mer frequency counting. mSystems:e01550-24. https://doi.org/10.1128/msystems.01550-24 
