@@ -65,7 +65,7 @@ cd q2-kmerizer
 Then, run:
 
 ```shell
-conda env create -n q2-kmerizer-dev --file ./environments/q2-kmerizer-qiime2-amplicon-2024.10.yml
+conda env create -n q2-kmerizer-dev --file ./environment-files/q2-kmerizer-qiime2-amplicon-2024.10.yml
 ```
 
 After this completes, activate the new environment you created by running:
