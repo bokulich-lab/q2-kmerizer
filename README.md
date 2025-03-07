@@ -34,10 +34,10 @@ After installing Miniconda and opening a new terminal, make sure you're running 
 conda update conda
 ```
 
-Now ue conda to install q2-kmerizer and QIIME 2:
+Now use conda to install q2-kmerizer and QIIME 2:
 
 ```shell
-conda env create -n kmerizer-stable --file https://raw.githubusercontent.com/bokulich-lab/q2-kmerizer/main/environments/q2-kmerizer-qiime2-amplicon-2024.10.yml
+conda env create -n kmerizer-stable --file https://raw.githubusercontent.com/bokulich-lab/q2-kmerizer/main/environment-files/q2-kmerizer-qiime2-amplicon-2024.10.yml
 ```
 
 After this completes, activate the new environment you created by running:
@@ -65,7 +65,7 @@ cd q2-kmerizer
 Then, run:
 
 ```shell
-conda env create -n q2-kmerizer-dev --file ./environments/q2-kmerizer-qiime2-amplicon-2024.10.yml
+conda env create -n q2-kmerizer-dev --file ./environment-files/q2-kmerizer-qiime2-amplicon-2024.10.yml
 ```
 
 After this completes, activate the new environment you created by running:
