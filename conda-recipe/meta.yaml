@@ -28,7 +28,6 @@ test:
   requires:
   - qiime2 >={{ qiime2 }}
   - q2-types >={{ q2_types }}
-
   - pytest
   imports:
   - q2_kmerizer
