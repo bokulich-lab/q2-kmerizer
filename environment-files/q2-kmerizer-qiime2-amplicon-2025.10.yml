@@ -6,4 +6,4 @@ dependencies:
   - qiime2-amplicon
   - pip
   - pip:
-     - "q2_kmerizer@git+https://github.com/bokulich-lab/q2-kmerizer.git@main"
+     - "q2_kmerizer@git+https://github.com/bokulich-lab/q2-kmerizer.git@2025.10.1"
