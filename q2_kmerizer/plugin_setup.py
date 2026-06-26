@@ -29,7 +29,7 @@ plugin = Plugin(
     package="q2_kmerizer",
     description="A plugin to generate kmers from biological sequences.",
     short_description="Kmer generation from sequences.",
-    citations=[]
+    citations=[citations['Bokulich2025']]
 )
 
 n_jobs_description = (
