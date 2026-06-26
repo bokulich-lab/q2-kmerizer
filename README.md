@@ -4,84 +4,15 @@ A [QIIME 2](https://qiime2.org) plugin for generating and working with kmers fro
 
 ## Installation instructions
 
-The easiest way to install q2-kmerizer is to install it directly into an existing installation of [QIIME 2](https://qiime2.org/) (amplicon distribution version 2024.10 or later). If you have the QIIME 2 amplicon distribution installed, activate your environment and run the following to install q2-kmerizer into this environment:
+The easiest way to install and use q2-kmerizer is to install [QIIME 2](https://qiime2.org/). q2-kmerizer has been included in the QIIME 2 distribution starting with release 2025.10. You can also install with `pip`, e.g., if you are using a custom `rachis` environment :
 ```
 pip install q2_kmerizer@git+https://github.com/bokulich-lab/q2-kmerizer.git@main
 ```
 
-And refresh your cache:
-```
-qiime dev refresh-cache
-```
-
-If the installation worked correctly, the following command should display a description of the plugin in your terminal:
+To confirm that q2-kmerizer is installed in your QIIME 2/rachis environment, run the following command in your terminal:
 ```
 qiime kmerizer --help
 ```
-
-
-
-### Installation of stable release
-
-If you do not already have QIIME 2 installed, you can follow these instructions to install the QIIME 2 amplicon distribution as well as the latest stable version of q2-kmerizer.
-
-[Miniconda](https://conda.io/miniconda.html) provides the `conda` environment and package manager, and is currently the only supported way to install QIIME 2.
-Follow the instructions for downloading and installing Miniconda.
-
-After installing Miniconda and opening a new terminal, make sure you're running the latest version of `conda`:
-
-```bash
-conda update conda
-```
-
-Now use conda to install q2-kmerizer and QIIME 2:
-
-```shell
-conda env create -n kmerizer-stable --file https://raw.githubusercontent.com/bokulich-lab/q2-kmerizer/main/environment-files/q2-kmerizer-qiime2-amplicon-2025.4.yml
-```
-
-After this completes, activate the new environment you created by running:
-
-```shell
-conda activate kmerizer-stable
-```
-
-Then refresh your cache and test as shown above.
-
-
-### Install development version of `q2-kmerizer`
-
-If you wish to use the development version of q2-kmerizer, e.g., to develop new features in your fork or to contribute to the main branch, follow these instructions.
-
-First, you must have conda installed, as described above.
-
-Next, clone the repository and move into the top-level `q2-kmerizer` directory. NOTE: make sure your current working directory is a location where you want to install this plugin!
-
-```
-git clone https://github.com/bokulich-lab/q2-kmerizer.git
-cd q2-kmerizer
-```
-
-Then, run:
-
-```shell
-conda env create -n q2-kmerizer-dev --file ./environment-files/q2-kmerizer-qiime2-amplicon-2025.4.yml
-```
-
-After this completes, activate the new environment you created by running:
-
-```shell
-conda activate q2-kmerizer-dev
-```
-
-Finally, run:
-
-```shell
-make install
-```
-
-Then refresh your cache and test as shown above.
-
 
 
 ## Examples
