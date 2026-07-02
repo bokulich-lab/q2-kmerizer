@@ -12,7 +12,7 @@ from q2_kmerizer import __version__
 from qiime2.plugin import (Int, Float, Bool, Range, Visualization, Metadata,
                            Str, Choices)
 from q2_types.feature_data import (
-    FeatureData, Sequence, RNASequence, ProteinSequence)
+    FeatureData, Sequence, RNASequence, ProteinSequence, LinkedSequence)
 from q2_types.distance_matrix import DistanceMatrix
 from q2_types.sample_data import AlphaDiversity, SampleData
 from q2_types.ordination import PCoAResults
@@ -40,7 +40,8 @@ n_jobs_description = (
 )
 
 inputs = {
-    'sequences': FeatureData[Sequence | RNASequence | ProteinSequence],
+    'sequences': FeatureData[
+        Sequence | RNASequence | ProteinSequence | LinkedSequence],
     'table': FeatureTable[Frequency]}
 
 core_parameters = {
