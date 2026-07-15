@@ -38,21 +38,15 @@ def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
         raise ValueError('No feature IDs match between the inputs.')
 
     # vectorize
-    # analyzer is changed to char_wb to accommodate linked sequences
-    # i.e., so that kmers do not bridge gaps between sequences.
-    # This will, however, yield terminal kmers that contain one space.
-    # Functionally speaking this probably does not matter during
-    # tokenization and the same terminal kmers are likely to be found in
-    # many sequences.
     if tfidf:
         _vectorizer = TfidfVectorizer
         cv = _vectorizer(
-            ngram_range=ngram_range, analyzer='char_wb', lowercase=False,
+            ngram_range=ngram_range, analyzer='char', lowercase=False,
             max_df=max_df, min_df=min_df, max_features=max_features, norm=norm)
     else:
         _vectorizer = CountVectorizer
         cv = _vectorizer(
-            ngram_range=ngram_range, analyzer='char_wb', lowercase=False,
+            ngram_range=ngram_range, analyzer='char', lowercase=False,
             max_df=max_df, min_df=min_df, max_features=max_features)
     # derive table of kmer frequencies per sequence
     X = cv.fit_transform(sequences.apply(str).values.tolist())
