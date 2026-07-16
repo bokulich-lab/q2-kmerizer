@@ -14,15 +14,19 @@ from skbio import OrdinationResults
 from qiime2 import Metadata
 
 
+def _to_kmers(seq, k):
+    # convert DNA() to str() for scikit-learn
+    # and do not span a kmer over linked subsequences (marked via space)
+    for chunk in str(seq).split(' '):
+        for i in range(len(chunk) - k + 1):
+            yield chunk[i:i + k]
+
+
 def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
                   kmer_size: int = 16, tfidf: bool = False,
                   max_df: float = 1.0, min_df: float = 1,
                   max_features: float = None,
                   norm: str = 'None') -> biom.Table:
-    # ngram_range = tuple
-    # convert single kmer size to tuple (range is not enabled at this time)
-    ngram_range = (kmer_size, kmer_size)
-
     # min_df should be an integer if ≥ 1.0 otherwise this would filter out all
     # kmers that are not found in every sequence, which probably almost nobody
     # would ever want.
@@ -38,24 +42,18 @@ def seqs_to_kmers(sequences: pd.Series, table: pd.DataFrame,
         raise ValueError('No feature IDs match between the inputs.')
 
     # vectorize
-    # analyzer is changed to char_wb to accommodate linked sequences
-    # i.e., so that kmers do not bridge gaps between sequences.
-    # This will, however, yield terminal kmers that contain one space.
-    # Functionally speaking this probably does not matter during
-    # tokenization and the same terminal kmers are likely to be found in
-    # many sequences.
     if tfidf:
         _vectorizer = TfidfVectorizer
         cv = _vectorizer(
-            ngram_range=ngram_range, analyzer='char_wb', lowercase=False,
+            analyzer=lambda seq: _to_kmers(seq, kmer_size), lowercase=False,
             max_df=max_df, min_df=min_df, max_features=max_features, norm=norm)
     else:
         _vectorizer = CountVectorizer
         cv = _vectorizer(
-            ngram_range=ngram_range, analyzer='char_wb', lowercase=False,
+            analyzer=lambda seq: _to_kmers(seq, kmer_size), lowercase=False,
             max_df=max_df, min_df=min_df, max_features=max_features)
     # derive table of kmer frequencies per sequence
-    X = cv.fit_transform(sequences.apply(str).values.tolist())
+    X = cv.fit_transform(sequences)
     # matrix multiplication of sampleXsequence X sequenceXkmer = sampleXkmer
     frequencies = np.dot(table, X.toarray())
     # convert to biom Table for outputting as a FeatureTable[Frequency]
@@ -110,7 +108,8 @@ def core_metrics(ctx, sequences, table, sampling_depth, metadata,
         pc_result = pcoa.view(OrdinationResults)
         prop_explained = pc_result.proportion_explained[:pc_dimensions].values
         pc_result = pcoa.view(Metadata).to_dataframe().iloc[:, :pc_dimensions]
-        pc_result.columns = ['{0} {1} ({2}%)'.format(name, c, int(p * 100)) for
+        # percent format works with NaN (which seems to happen sometimes)
+        pc_result.columns = ['{0} {1} ({2:.0%})'.format(name, c, p) for
                              c, p in zip(pc_result.columns, prop_explained)]
         metadata = Metadata(pc_result).merge(metadata)
 

@@ -40,8 +40,8 @@ n_jobs_description = (
 )
 
 inputs = {
-    'sequences': FeatureData[
-        Sequence | RNASequence | ProteinSequence | LinkedSequence],
+    'sequences': FeatureData[Sequence | RNASequence | ProteinSequence
+                             | LinkedSequence],
     'table': FeatureTable[Frequency]}
 
 core_parameters = {

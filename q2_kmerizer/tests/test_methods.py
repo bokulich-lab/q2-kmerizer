@@ -12,7 +12,11 @@ import pandas.testing as pdt
 from qiime2.plugin.testing import TestPluginBase
 from qiime2 import Artifact, Metadata
 
-from q2_kmerizer._methods import seqs_to_kmers
+from q2_kmerizer._methods import seqs_to_kmers, _to_kmers
+
+
+def test_to_kmers():
+    assert ['ab', 'bc', 'cd'] == list(_to_kmers('abcd', k=2))
 
 
 class KmerizerTests(TestPluginBase):
@@ -26,23 +30,40 @@ class KmerizerTests(TestPluginBase):
         self.table = pd.DataFrame([[1, 0], [2, 3], [1, 1]],
                                   columns=['A', 'B'], index=['s1', 's2', 's3'])
 
+    def test_count_split_seqs(self):
+        seqs = pd.Series(
+            ['AAAA GGGG', 'TTTT CCCC'], index=['A', 'B'])
+        table = pd.DataFrame([[1, 0], [2, 3], [1, 1]],
+                             columns=['A', 'B'], index=['s1', 's2', 's3'])
+        observed = seqs_to_kmers(seqs, table, kmer_size=4)
+
+        expected = pd.DataFrame(
+            [[1, 0, 1, 0],
+             [2, 3, 2, 3],
+             [1, 1, 1, 1]],
+            columns=['AAAA', 'CCCC', 'GGGG', 'TTTT'],
+            index=['s1', 's2', 's3'])
+
+        # note: observed df is transposed because it is transposed by biom
+        pdt.assert_frame_equal(observed.to_dataframe().T, expected,
+                               check_dtype=False)
+
     def test_count_vectorizer(self):
         observed = seqs_to_kmers(self.seqs, self.table, kmer_size=7)
 
         expected = pd.DataFrame(
-            [[0., 1., 1., 0., 0., 1., 0., 1., 0., 1., 0., 1., 0., 1., 0., 0.,
-              1., 1., 0., 1., 1., 1., 0., 1., 0., 1., 0., 0., 1., 0., 1., 0.],
-             [3., 2., 2., 3., 3., 2., 3., 2., 3., 2., 3., 2., 3., 2., 3., 3.,
-              2., 2., 3., 2., 2., 2., 3., 2., 3., 2., 3., 3., 2., 3., 2., 3.],
-             [1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.,
-              1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]],
-            columns=[' TACGAG', ' TACGGG', 'AAGCGTT', 'AAGGGTT', 'ACGAGAA',
-                     'ACGGGAG', 'AGAAGGG', 'AGCGTT ', 'AGCGTTA', 'AGGGTGC',
-                     'AGGGTTA', 'CAAGCGT', 'CGAGAAG', 'CGGGAGG', 'GAAGGGT',
-                     'GAGAAGG', 'GAGGGTG', 'GCAAGCG', 'GCGTTA ', 'GGAGGGT',
-                     'GGGAGGG', 'GGGTGCA', 'GGGTTAG', 'GGTGCAA', 'GGTTAGC',
-                     'GTGCAAG', 'GTTAGCG', 'TACGAGA', 'TACGGGA', 'TAGCGTT',
-                     'TGCAAGC', 'TTAGCGT'],
+            [[1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+              0, 0, 1, 0, 1, 0],
+             [2, 3, 3, 2, 3, 3, 2, 3, 2, 3, 2, 3, 3, 2, 2, 2, 2, 2, 3, 2, 3, 2,
+              3, 3, 2, 3, 2, 3],
+             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+              1, 1, 1, 1, 1, 1]],
+            columns=['AAGCGTT', 'AAGGGTT', 'ACGAGAA', 'ACGGGAG', 'AGAAGGG',
+                     'AGCGTTA', 'AGGGTGC', 'AGGGTTA', 'CAAGCGT', 'CGAGAAG',
+                     'CGGGAGG', 'GAAGGGT', 'GAGAAGG', 'GAGGGTG', 'GCAAGCG',
+                     'GGAGGGT', 'GGGAGGG', 'GGGTGCA', 'GGGTTAG', 'GGTGCAA',
+                     'GGTTAGC', 'GTGCAAG', 'GTTAGCG', 'TACGAGA', 'TACGGGA',
+                     'TAGCGTT', 'TGCAAGC', 'TTAGCGT'],
             index=['s1', 's2', 's3'])
 
         # note: observed df is transposed because it is transposed by biom
@@ -54,32 +75,30 @@ class KmerizerTests(TestPluginBase):
             self.seqs, self.table, tfidf=True, kmer_size=7)
 
         expected = pd.DataFrame(
-            [[0., 1.40546511, 1.40546511, 0., 0., 1.40546511, 0., 1.40546511,
-              0., 1.40546511, 0., 1.40546511, 0., 1.40546511, 0., 0.,
-              1.40546511, 1.40546511, 0., 1.40546511, 1.40546511, 1.40546511,
-              0., 1.40546511, 0., 1.40546511, 0., 0., 1.40546511, 0.,
-              1.40546511, 0.],
-             [4.21639532, 2.81093022, 2.81093022, 4.21639532, 4.21639532,
-              2.81093022, 4.21639532, 2.81093022, 4.21639532, 2.81093022,
-              4.21639532, 2.81093022, 4.21639532, 2.81093022, 4.21639532,
-              4.21639532, 2.81093022, 2.81093022, 4.21639532, 2.81093022,
-              2.81093022, 2.81093022, 4.21639532, 2.81093022, 4.21639532,
-              2.81093022, 4.21639532, 4.21639532, 2.81093022, 4.21639532,
-              2.81093022, 4.21639532],
-             [1.40546511, 1.40546511, 1.40546511, 1.40546511, 1.40546511,
-             1.40546511, 1.40546511, 1.40546511, 1.40546511, 1.40546511,
-             1.40546511, 1.40546511, 1.40546511, 1.40546511, 1.40546511,
-             1.40546511, 1.40546511, 1.40546511, 1.40546511, 1.40546511,
-             1.40546511, 1.40546511, 1.40546511, 1.40546511, 1.40546511,
-             1.40546511, 1.40546511, 1.40546511, 1.40546511, 1.40546511,
-             1.40546511, 1.40546511]],
-            columns=[' TACGAG', ' TACGGG', 'AAGCGTT', 'AAGGGTT', 'ACGAGAA',
-                     'ACGGGAG', 'AGAAGGG', 'AGCGTT ', 'AGCGTTA', 'AGGGTGC',
-                     'AGGGTTA', 'CAAGCGT', 'CGAGAAG', 'CGGGAGG', 'GAAGGGT',
-                     'GAGAAGG', 'GAGGGTG', 'GCAAGCG', 'GCGTTA ', 'GGAGGGT',
-                     'GGGAGGG', 'GGGTGCA', 'GGGTTAG', 'GGTGCAA', 'GGTTAGC',
-                     'GTGCAAG', 'GTTAGCG', 'TACGAGA', 'TACGGGA', 'TAGCGTT',
-                     'TGCAAGC', 'TTAGCGT'],
+            [[1.405465, 0., 0., 1.405465, 0.,
+              0., 1.405465, 0., 1.405465, 0.,
+              1.405465, 0., 0., 1.405465, 1.405465,
+              1.405465, 1.405465, 1.405465, 0., 1.405465,
+              0., 1.405465, 0., 0., 1.405465,
+              0., 1.405465, 0.],
+             [2.81093, 4.216395, 4.216395, 2.81093, 4.216395,
+              4.216395, 2.81093, 4.216395, 2.81093, 4.216395,
+              2.81093, 4.216395, 4.216395, 2.81093, 2.81093,
+              2.81093, 2.81093, 2.81093, 4.216395, 2.81093,
+              4.216395, 2.81093, 4.216395, 4.216395, 2.81093,
+              4.216395, 2.81093, 4.216395],
+             [1.405465, 1.405465, 1.405465, 1.405465, 1.405465,
+              1.405465, 1.405465, 1.405465, 1.405465, 1.405465,
+              1.405465, 1.405465, 1.405465, 1.405465, 1.405465,
+              1.405465, 1.405465, 1.405465, 1.405465, 1.405465,
+              1.405465, 1.405465, 1.405465, 1.405465, 1.405465,
+              1.405465, 1.405465, 1.405465]],
+            columns=['AAGCGTT', 'AAGGGTT', 'ACGAGAA', 'ACGGGAG', 'AGAAGGG',
+                     'AGCGTTA', 'AGGGTGC', 'AGGGTTA', 'CAAGCGT', 'CGAGAAG',
+                     'CGGGAGG', 'GAAGGGT', 'GAGAAGG', 'GAGGGTG', 'GCAAGCG',
+                     'GGAGGGT', 'GGGAGGG', 'GGGTGCA', 'GGGTTAG', 'GGTGCAA',
+                     'GGTTAGC', 'GTGCAAG', 'GTTAGCG', 'TACGAGA', 'TACGGGA',
+                     'TAGCGTT', 'TGCAAGC', 'TTAGCGT'],
             index=['s1', 's2', 's3'])
 
         # note: observed df is transposed because it is transposed by biom
